@@ -102,10 +102,12 @@ OpenAI, Anthropic, Google DeepMind, Hugging Face, Mistral, Stability AI, a16z AI
 ## Build Order (completed steps)
 - [x] Step 1: Next.js scaffold + shadcn/ui init + supabase/schema.sql + lib/sources.ts
 - [x] Step 2: lib/supabase.ts + lib/rss.ts + lib/summarize.ts
-- [ ] Step 3: app/api/cron/ingest/route.ts
-- [ ] Step 4: app/api/feed/route.ts + Feed.tsx + FeedItem.tsx + CategoryFilter.tsx + app/page.tsx
-- [ ] Step 5: SignupModal.tsx + app/api/subscribe/route.ts
-- [ ] Step 6: lib/email.ts + app/api/cron/digest/route.ts
-- [ ] Step 7: SubmitForm.tsx + app/submit/page.tsx + app/api/submit/route.ts
-- [ ] Step 8: AdminQueue.tsx + app/api/moderate/route.ts
-- [ ] Step 9: vercel.json + .env.local.example + README.md
+- [x] Step 3: app/api/cron/ingest/route.ts
+- [x] Step 4: app/api/feed/route.ts + Feed.tsx + FeedItem.tsx + CategoryFilter.tsx + app/page.tsx
+- [x] Step 5: SignupModal.tsx + app/api/subscribe/route.ts
+- [x] Step 6: lib/email.ts + app/api/cron/digest/route.ts + app/unsubscribe/page.tsx
+- [x] Step 7: SubmitForm.tsx + app/submit/page.tsx + app/api/submit/route.ts
+- [x] Step 8: AdminQueue.tsx + app/api/moderate/route.ts + app/admin/page.tsx
+- [x] Step 9: vercel.json + .env.local.example + README.md
+
+## Build complete — ready for deployment
