@@ -1,10 +1,8 @@
 import { Feed } from '@/components/Feed'
-import { buttonVariants } from '@/components/ui/button'
+import { HeaderActions } from '@/components/HeaderActions'
 import { Separator } from '@/components/ui/separator'
-import { SignupModal } from '@/components/SignupModal'
 import Link from 'next/link'
 import { Rss } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 export default function HomePage() {
   return (
@@ -22,12 +20,7 @@ export default function HomePage() {
                 Launches, news, and research from across the AI ecosystem — updated every 6 hours.
               </p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Link href="/submit" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
-                Submit
-              </Link>
-              <SignupModal />
-            </div>
+            <HeaderActions />
           </div>
           <Separator className="mt-6" />
         </header>
