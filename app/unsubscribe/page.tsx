@@ -4,8 +4,6 @@ import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 
 function UnsubscribeContent() {
   const searchParams = useSearchParams()
@@ -50,7 +48,7 @@ function UnsubscribeContent() {
           <p className="text-sm text-muted-foreground">
             You won&apos;t receive any more digest emails. You can resubscribe anytime.
           </p>
-          <Link href="/" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
+          <Link href="/" className="inline-flex items-center justify-center h-7 px-2.5 text-sm rounded-lg border border-border bg-background hover:bg-muted transition-colors">
             Back to AI Radar
           </Link>
         </>
@@ -66,7 +64,7 @@ function UnsubscribeContent() {
             <p className="text-sm text-destructive">{message}</p>
           )}
           <div className="flex justify-center gap-2">
-            <Link href="/" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
+            <Link href="/" className="inline-flex items-center justify-center h-7 px-2.5 text-sm rounded-lg border border-border bg-background hover:bg-muted transition-colors">
               Cancel
             </Link>
             <Button

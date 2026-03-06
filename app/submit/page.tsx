@@ -1,9 +1,7 @@
 import { SubmitForm } from '@/components/SubmitForm'
 import { Separator } from '@/components/ui/separator'
-import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 export const metadata = {
   title: 'Submit a link — AI Radar',
@@ -17,7 +15,7 @@ export default function SubmitPage() {
         <div className="mb-6">
           <Link
             href="/"
-            className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), '-ml-2 mb-4 flex items-center gap-1.5 text-muted-foreground')}
+            className="-ml-2 mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to feed
