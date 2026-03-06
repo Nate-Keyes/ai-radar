@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest } from 'next/server'
 import { fetchAllFeeds } from '@/lib/rss'
 import { summarizeItem } from '@/lib/summarize'
