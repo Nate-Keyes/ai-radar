@@ -1,8 +1,8 @@
-import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import type { Category } from './sources'
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
 })
 
 export interface SummarizeResult {
@@ -42,13 +42,13 @@ Respond in this exact JSON format (no markdown, no extra text):
 {"summary":"...","category":"launch|news|update|research"}`
 
   try {
-    const message = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
       max_tokens: 256,
       messages: [{ role: 'user', content: prompt }],
     })
 
-    const text = message.content[0].type === 'text' ? message.content[0].text : ''
+    const text = response.choices[0]?.message?.content ?? ''
     const parsed = JSON.parse(text) as { summary: string; category: Category }
 
     const validCategories: Category[] = ['launch', 'news', 'update', 'research']
@@ -59,8 +59,7 @@ Respond in this exact JSON format (no markdown, no extra text):
       category,
     }
   } catch (err) {
-    console.error('[summarize] Claude API error:', err)
-    // Fallback: use title as summary, keep hint category
+    console.error('[summarize] OpenAI error:', err)
     return {
       summary: title,
       category: hintCategory,
