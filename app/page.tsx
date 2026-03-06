@@ -1,6 +1,7 @@
 import { Feed } from '@/components/Feed'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { SignupModal } from '@/components/SignupModal'
 import Link from 'next/link'
 import { Rss } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -25,8 +26,7 @@ export default function HomePage() {
               <Link href="/submit" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
                 Submit
               </Link>
-              {/* SignupModal goes here in Step 5 */}
-              <Button size="sm">Subscribe</Button>
+              <SignupModal />
             </div>
           </div>
           <Separator className="mt-6" />
