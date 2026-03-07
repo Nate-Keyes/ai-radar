@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { FeedItem, type FeedItemData } from './FeedItem'
-import { FeedFilters, type TopicOption, type TypeOption } from './FeedFilters'
+import { FeedFilters, type TopicOption } from './FeedFilters'
 import { ArticleSheet } from './ArticleSheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -10,16 +10,12 @@ import { Separator } from '@/components/ui/separator'
 
 function FeedSkeleton() {
   return (
-    <div className="space-y-1">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="px-4 py-3.5 -mx-4 space-y-2">
-          <div className="flex gap-2 items-center">
-            <Skeleton className="h-5 w-20 rounded-md" />
-            <Skeleton className="h-5 w-16 rounded-md" />
-            <Skeleton className="h-3 w-20" />
-          </div>
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-3 w-full" />
+    <div className="space-y-0.5">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div key={i} className="flex items-center gap-3 px-4 py-2 -mx-4">
+          <Skeleton className="h-5 w-20 rounded-md shrink-0" />
+          <Skeleton className="h-4 flex-1" />
+          <Skeleton className="h-3 w-24 shrink-0 hidden sm:block" />
         </div>
       ))}
     </div>
@@ -28,7 +24,8 @@ function FeedSkeleton() {
 
 export function Feed() {
   const [topic, setTopic] = useState<TopicOption>('all')
-  const [type, setType] = useState<TypeOption>('all')
+  const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [items, setItems] = useState<FeedItemData[]>([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
@@ -37,16 +34,22 @@ export function Feed() {
   const [error, setError] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<FeedItemData | null>(null)
 
+  // Debounce search input 300ms
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(t)
+  }, [search])
+
   const fetchItems = useCallback(async (
     tp: TopicOption,
-    ty: TypeOption,
+    q: string,
     pg: number,
     append: boolean
   ) => {
     try {
       const params = new URLSearchParams({ page: String(pg), limit: '20' })
       if (tp !== 'all') params.set('topic', tp)
-      if (ty !== 'all') params.set('category', ty)
+      if (q.trim()) params.set('q', q.trim())
       const res = await fetch(`/api/feed?${params}`)
       if (!res.ok) throw new Error('Failed to load feed')
       const data = await res.json()
@@ -57,18 +60,18 @@ export function Feed() {
     }
   }, [])
 
-  // Reset and reload when filters change
+  // Reset and reload when topic or debounced search changes
   useEffect(() => {
     setLoading(true)
     setPage(1)
     setError(null)
-    fetchItems(topic, type, 1, false).finally(() => setLoading(false))
-  }, [topic, type, fetchItems])
+    fetchItems(topic, debouncedSearch, 1, false).finally(() => setLoading(false))
+  }, [topic, debouncedSearch, fetchItems])
 
   const loadMore = async () => {
     const nextPage = page + 1
     setLoadingMore(true)
-    await fetchItems(topic, type, nextPage, true)
+    await fetchItems(topic, debouncedSearch, nextPage, true)
     setPage(nextPage)
     setLoadingMore(false)
   }
@@ -78,8 +81,8 @@ export function Feed() {
       <FeedFilters
         topic={topic}
         onTopicChange={setTopic}
-        type={type}
-        onTypeChange={setType}
+        search={search}
+        onSearchChange={setSearch}
       />
       <Separator />
 
@@ -89,7 +92,7 @@ export function Feed() {
         <p className="text-sm text-destructive py-8 text-center">{error}</p>
       ) : items.length === 0 ? (
         <p className="text-sm text-muted-foreground py-12 text-center">
-          No items yet — check back soon.
+          {debouncedSearch ? `No results for "${debouncedSearch}"` : 'No items yet — check back soon.'}
         </p>
       ) : (
         <>

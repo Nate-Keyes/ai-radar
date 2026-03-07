@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const category = searchParams.get('category') // null = all
   const topic = searchParams.get('topic') // null = all
+  const q = searchParams.get('q') // null = no search
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10))
   const limit = Math.min(50, parseInt(searchParams.get('limit') ?? String(PAGE_SIZE), 10))
   const from = (page - 1) * limit
@@ -27,6 +28,11 @@ export async function GET(req: NextRequest) {
 
   if (topic && topic !== 'all') {
     query = query.eq('topic', topic)
+  }
+
+  if (q && q.trim()) {
+    const term = q.trim()
+    query = query.or(`title.ilike.%${term}%,summary.ilike.%${term}%`)
   }
 
   const { data, error, count } = await query
