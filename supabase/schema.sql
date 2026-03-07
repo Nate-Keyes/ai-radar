@@ -17,6 +17,11 @@ create index if not exists items_published_at_idx on items (published_at desc);
 create index if not exists items_category_idx on items (category);
 create index if not exists items_approved_idx on items (approved);
 
+-- Migration: add topic column for role-aligned topic filtering
+-- Run in Supabase SQL editor after initial schema is deployed:
+-- ALTER TABLE items ADD COLUMN IF NOT EXISTS topic text CHECK (topic IN ('design','models','product','research','industry'));
+-- CREATE INDEX IF NOT EXISTS items_topic_idx ON items(topic);
+
 -- Subscribers: email + digest preference
 create table if not exists subscribers (
   id uuid primary key default gen_random_uuid(),

@@ -1,20 +1,27 @@
-import { ExternalLink } from 'lucide-react'
-
 export interface FeedItemData {
   id: string
   title: string
   url: string
   summary: string | null
   category: 'launch' | 'news' | 'update' | 'research'
+  topic: 'design' | 'models' | 'product' | 'research' | 'industry' | null
   source: string
   published_at: string
 }
 
-const CATEGORY_LABELS: Record<FeedItemData['category'], string> = {
+const TYPE_LABELS: Record<FeedItemData['category'], string> = {
   launch: 'Launch',
   news: 'News',
   update: 'Update',
+  research: 'Paper',
+}
+
+const TOPIC_LABELS: Record<NonNullable<FeedItemData['topic']>, string> = {
+  design: 'Design Tools',
+  models: 'Models & AI',
+  product: 'Product',
   research: 'Research',
+  industry: 'Industry',
 }
 
 function timeAgo(dateStr: string): string {
@@ -29,20 +36,24 @@ function timeAgo(dateStr: string): string {
 
 interface FeedItemProps {
   item: FeedItemData
+  onClick: (item: FeedItemData) => void
 }
 
-export function FeedItem({ item }: FeedItemProps) {
+export function FeedItem({ item, onClick }: FeedItemProps) {
   return (
-    <a
-      href={item.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex items-start justify-between gap-4 rounded-lg px-4 py-3.5 -mx-4 transition-colors hover:bg-muted/50"
+    <button
+      onClick={() => onClick(item)}
+      className="group w-full text-left flex items-start justify-between gap-4 rounded-lg px-4 py-3.5 -mx-4 transition-colors hover:bg-muted/50"
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
-          <span className="inline-flex items-center rounded-md border border-border bg-background px-2 py-0.5 text-xs font-medium text-muted-foreground">
-            {CATEGORY_LABELS[item.category]}
+          {item.topic && (
+            <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              {TOPIC_LABELS[item.topic]}
+            </span>
+          )}
+          <span className="inline-flex items-center rounded-md border border-border bg-background px-2 py-0.5 text-xs text-muted-foreground">
+            {TYPE_LABELS[item.category]}
           </span>
           <span className="text-xs text-muted-foreground">{item.source}</span>
           <span className="text-xs text-muted-foreground/50">·</span>
@@ -57,7 +68,6 @@ export function FeedItem({ item }: FeedItemProps) {
           </p>
         )}
       </div>
-      <ExternalLink className="w-3.5 h-3.5 mt-1 shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-    </a>
+    </button>
   )
 }

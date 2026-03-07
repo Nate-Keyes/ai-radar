@@ -13,6 +13,7 @@ export interface FeedItem {
   url: string
   source: string
   category: Source['category']
+  topic: Source['topic']
   publishedAt: Date
   rawContent?: string
 }
@@ -27,6 +28,7 @@ export async function fetchFeed(source: Source): Promise<FeedItem[]> {
         url: item.link!,
         source: source.name,
         category: source.category,
+        topic: source.topic,
         publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
         rawContent: item.contentSnippet ?? item.summary ?? item.content ?? '',
       }))

@@ -68,10 +68,11 @@ export async function POST(req: NextRequest) {
   }
 
   // Approve: summarize + insert into items
-  const { summary, category } = await summarizeItem(
+  const { summary, category, topic } = await summarizeItem(
     submission.title,
     submission.description ?? '',
-    'news' as Category
+    'news' as Category,
+    'industry'
   )
 
   const { error: insertError } = await supabaseAdmin.from('items').insert({
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
     url: submission.url,
     summary,
     category,
+    topic,
     source: 'Community',
     published_at: new Date().toISOString(),
     approved: true,

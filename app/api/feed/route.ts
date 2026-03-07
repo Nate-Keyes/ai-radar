@@ -8,6 +8,7 @@ const PAGE_SIZE = 20
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const category = searchParams.get('category') // null = all
+  const topic = searchParams.get('topic') // null = all
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10))
   const limit = Math.min(50, parseInt(searchParams.get('limit') ?? String(PAGE_SIZE), 10))
   const from = (page - 1) * limit
@@ -15,13 +16,17 @@ export async function GET(req: NextRequest) {
 
   let query = supabase
     .from('items')
-    .select('id, title, url, summary, category, source, published_at', { count: 'exact' })
+    .select('id, title, url, summary, category, topic, source, published_at', { count: 'exact' })
     .eq('approved', true)
     .order('published_at', { ascending: false })
     .range(from, to)
 
   if (category && category !== 'all') {
     query = query.eq('category', category)
+  }
+
+  if (topic && topic !== 'all') {
+    query = query.eq('topic', topic)
   }
 
   const { data, error, count } = await query

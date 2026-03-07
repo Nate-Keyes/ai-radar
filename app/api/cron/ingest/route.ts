@@ -49,16 +49,18 @@ export async function GET(req: NextRequest) {
 
     const summarized = await Promise.allSettled(
       batch.map(async (item) => {
-        const { summary, category } = await summarizeItem(
+        const { summary, category, topic } = await summarizeItem(
           item.title,
           item.rawContent ?? '',
-          item.category
+          item.category,
+          item.topic
         )
         return {
           title: item.title,
           url: item.url,
           summary,
           category,
+          topic,
           source: item.source,
           published_at: item.publishedAt.toISOString(),
           approved: true,
@@ -74,6 +76,7 @@ export async function GET(req: NextRequest) {
         url: string
         summary: string
         category: string
+        topic: string
         source: string
         published_at: string
         approved: boolean

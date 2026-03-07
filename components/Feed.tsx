@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { FeedItem, type FeedItemData } from './FeedItem'
-import { CategoryFilter, type CategoryOption } from './CategoryFilter'
+import { FeedFilters, type TopicOption, type TypeOption } from './FeedFilters'
+import { ArticleSheet } from './ArticleSheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -13,6 +14,7 @@ function FeedSkeleton() {
       {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="px-4 py-3.5 -mx-4 space-y-2">
           <div className="flex gap-2 items-center">
+            <Skeleton className="h-5 w-20 rounded-md" />
             <Skeleton className="h-5 w-16 rounded-md" />
             <Skeleton className="h-3 w-20" />
           </div>
@@ -25,18 +27,26 @@ function FeedSkeleton() {
 }
 
 export function Feed() {
-  const [category, setCategory] = useState<CategoryOption>('all')
+  const [topic, setTopic] = useState<TopicOption>('all')
+  const [type, setType] = useState<TypeOption>('all')
   const [items, setItems] = useState<FeedItemData[]>([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedItem, setSelectedItem] = useState<FeedItemData | null>(null)
 
-  const fetchItems = useCallback(async (cat: CategoryOption, pg: number, append: boolean) => {
+  const fetchItems = useCallback(async (
+    tp: TopicOption,
+    ty: TypeOption,
+    pg: number,
+    append: boolean
+  ) => {
     try {
       const params = new URLSearchParams({ page: String(pg), limit: '20' })
-      if (cat !== 'all') params.set('category', cat)
+      if (tp !== 'all') params.set('topic', tp)
+      if (ty !== 'all') params.set('category', ty)
       const res = await fetch(`/api/feed?${params}`)
       if (!res.ok) throw new Error('Failed to load feed')
       const data = await res.json()
@@ -47,25 +57,30 @@ export function Feed() {
     }
   }, [])
 
-  // Initial load + category change
+  // Reset and reload when filters change
   useEffect(() => {
     setLoading(true)
     setPage(1)
     setError(null)
-    fetchItems(category, 1, false).finally(() => setLoading(false))
-  }, [category, fetchItems])
+    fetchItems(topic, type, 1, false).finally(() => setLoading(false))
+  }, [topic, type, fetchItems])
 
   const loadMore = async () => {
     const nextPage = page + 1
     setLoadingMore(true)
-    await fetchItems(category, nextPage, true)
+    await fetchItems(topic, type, nextPage, true)
     setPage(nextPage)
     setLoadingMore(false)
   }
 
   return (
     <div className="space-y-4">
-      <CategoryFilter value={category} onChange={setCategory} />
+      <FeedFilters
+        topic={topic}
+        onTopicChange={setTopic}
+        type={type}
+        onTypeChange={setType}
+      />
       <Separator />
 
       {loading ? (
@@ -80,7 +95,7 @@ export function Feed() {
         <>
           <div>
             {items.map((item) => (
-              <FeedItem key={item.id} item={item} />
+              <FeedItem key={item.id} item={item} onClick={setSelectedItem} />
             ))}
           </div>
 
@@ -98,6 +113,12 @@ export function Feed() {
           )}
         </>
       )}
+
+      <ArticleSheet
+        item={selectedItem}
+        open={selectedItem !== null}
+        onOpenChange={(open) => { if (!open) setSelectedItem(null) }}
+      />
     </div>
   )
 }
