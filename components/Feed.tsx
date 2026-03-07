@@ -9,12 +9,12 @@ import { Separator } from '@/components/ui/separator'
 
 function FeedSkeleton() {
   return (
-    <div className="space-y-2">
+    <div className="space-y-1">
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="rounded-lg border border-border/60 px-5 py-4 space-y-2">
-          <div className="flex gap-2">
-            <Skeleton className="h-5 w-16 rounded-full" />
-            <Skeleton className="h-5 w-24" />
+        <div key={i} className="px-4 py-3.5 -mx-4 space-y-2">
+          <div className="flex gap-2 items-center">
+            <Skeleton className="h-5 w-16 rounded-md" />
+            <Skeleton className="h-3 w-20" />
           </div>
           <Skeleton className="h-4 w-3/4" />
           <Skeleton className="h-3 w-full" />
@@ -78,7 +78,7 @@ export function Feed() {
         </p>
       ) : (
         <>
-          <div className="space-y-2">
+          <div>
             {items.map((item) => (
               <FeedItem key={item.id} item={item} />
             ))}

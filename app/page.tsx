@@ -2,22 +2,17 @@ import { Feed } from '@/components/Feed'
 import { HeaderActions } from '@/components/HeaderActions'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
-import { Rss } from 'lucide-react'
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-10">
-        {/* Header */}
+      <div className="max-w-2xl mx-auto px-4 py-12">
         <header className="mb-8">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <Rss className="w-5 h-5 text-primary" />
-                <h1 className="text-xl font-semibold tracking-tight">AI Radar</h1>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Launches, news, and research from across the AI ecosystem — updated every 6 hours.
+              <h1 className="text-base font-semibold tracking-tight">AI Radar</h1>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Launches, news, and research from the AI ecosystem.
               </p>
             </div>
             <HeaderActions />
@@ -25,14 +20,12 @@ export default function HomePage() {
           <Separator className="mt-6" />
         </header>
 
-        {/* Feed */}
         <Feed />
 
-        {/* Footer */}
-        <footer className="mt-12 pt-6 border-t border-border/40">
+        <footer className="mt-16 pt-6 border-t border-border/40">
           <p className="text-xs text-muted-foreground text-center">
-            AI Radar · Updated every 6 hours ·{' '}
-            <Link href="/submit" className="underline underline-offset-2 hover:text-foreground">
+            Updated every 6 hours ·{' '}
+            <Link href="/submit" className="underline underline-offset-2 hover:text-foreground transition-colors">
               Submit a link
             </Link>
           </p>
