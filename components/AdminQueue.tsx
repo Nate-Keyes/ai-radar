@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Alert } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ExternalLink, CheckCircle, XCircle, RefreshCw } from 'lucide-react'
 
 interface Submission {
@@ -31,10 +31,10 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(hours / 24)}d ago`
 }
 
-const STATUS_STYLES: Record<Filter, string> = {
-  pending: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
-  approved: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
-  rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
+const STATUS_VARIANT: Record<Filter, 'outline' | 'secondary' | 'destructive'> = {
+  pending: 'outline',
+  approved: 'secondary',
+  rejected: 'destructive',
 }
 
 export function AdminQueue() {
@@ -161,25 +161,17 @@ export function AdminQueue() {
         </div>
 
         {/* Filter tabs */}
-        <div className="flex gap-1 border-b border-border/60 pb-0">
-          {(['pending', 'approved', 'rejected'] as Filter[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-3 py-2 text-sm capitalize transition-colors border-b-2 -mb-px ${
-                filter === f
-                  ? 'border-foreground text-foreground font-medium'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
+        <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
+          <TabsList>
+            <TabsTrigger value="pending">Pending</TabsTrigger>
+            <TabsTrigger value="approved">Approved</TabsTrigger>
+            <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {/* Toast */}
         {toast && (
-          <Alert className="py-2 px-3 text-sm">{toast}</Alert>
+          <p className="text-sm text-muted-foreground border border-border rounded-md px-3 py-2">{toast}</p>
         )}
 
         {/* List */}
@@ -197,10 +189,7 @@ export function AdminQueue() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <Badge
-                          variant="outline"
-                          className={`text-xs capitalize ${STATUS_STYLES[sub.status]}`}
-                        >
+                        <Badge variant={STATUS_VARIANT[sub.status]} className="text-xs capitalize">
                           {sub.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">{timeAgo(sub.created_at)}</span>

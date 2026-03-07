@@ -13,13 +13,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 type DigestDay = 'friday' | 'monday'
-
-const DAY_OPTIONS: { value: DigestDay; label: string; detail: string }[] = [
-  { value: 'friday', label: 'Friday', detail: '2pm UTC — start the weekend informed' },
-  { value: 'monday', label: 'Monday', detail: '8am UTC — kick off the week' },
-]
 
 export function SignupModal() {
   const [open, setOpen] = useState(false)
@@ -111,23 +107,27 @@ export function SignupModal() {
 
               <div className="space-y-1.5">
                 <Label>Delivery day</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {DAY_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => setDigestDay(opt.value)}
-                      className={`rounded-lg border px-3 py-2.5 text-left transition-colors text-sm ${
-                        digestDay === opt.value
-                          ? 'border-primary bg-primary/5 text-foreground'
-                          : 'border-border bg-background text-muted-foreground hover:border-foreground/30'
-                      }`}
-                    >
-                      <p className="font-medium">{opt.label}</p>
-                      <p className="text-xs mt-0.5 opacity-70">{opt.detail}</p>
-                    </button>
-                  ))}
-                </div>
+                <ToggleGroup
+                  value={[digestDay]}
+                  onValueChange={(v) => v.length > 0 && setDigestDay(v[v.length - 1] as DigestDay)}
+                  className="grid grid-cols-2 gap-2"
+                  spacing={1}
+                >
+                  <ToggleGroupItem
+                    value="friday"
+                    className="h-auto flex-col items-start px-3 py-2.5 text-left"
+                  >
+                    <p className="font-medium text-sm">Friday</p>
+                    <p className="text-xs mt-0.5 opacity-70">2pm UTC — start the weekend informed</p>
+                  </ToggleGroupItem>
+                  <ToggleGroupItem
+                    value="monday"
+                    className="h-auto flex-col items-start px-3 py-2.5 text-left"
+                  >
+                    <p className="font-medium text-sm">Monday</p>
+                    <p className="text-xs mt-0.5 opacity-70">8am UTC — kick off the week</p>
+                  </ToggleGroupItem>
+                </ToggleGroup>
               </div>
 
               {status === 'error' && (
