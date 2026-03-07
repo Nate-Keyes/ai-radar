@@ -16,7 +16,7 @@ import {
   FieldLabel,
   FieldDescription,
 } from '@/components/ui/field'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 type DigestDay = 'friday' | 'monday'
 
@@ -111,27 +111,32 @@ export function SignupModal() {
 
               <Field>
                 <FieldLabel>Delivery day</FieldLabel>
-                <ToggleGroup
-                  value={[digestDay]}
-                  onValueChange={(v) => v.length > 0 && setDigestDay(v[v.length - 1] as DigestDay)}
-                  className="grid grid-cols-2 gap-2 w-full"
-                  spacing={1}
+                <RadioGroup
+                  value={digestDay}
+                  onValueChange={(v) => setDigestDay(v as DigestDay)}
+                  className="grid grid-cols-2 gap-2"
                 >
-                  <ToggleGroupItem
-                    value="friday"
-                    className="h-auto flex-col items-start px-3 py-2.5 text-left"
-                  >
-                    <span className="text-sm font-medium">Friday</span>
-                    <span className="text-xs text-muted-foreground mt-0.5">2pm UTC</span>
-                  </ToggleGroupItem>
-                  <ToggleGroupItem
-                    value="monday"
-                    className="h-auto flex-col items-start px-3 py-2.5 text-left"
-                  >
-                    <span className="text-sm font-medium">Monday</span>
-                    <span className="text-xs text-muted-foreground mt-0.5">8am UTC</span>
-                  </ToggleGroupItem>
-                </ToggleGroup>
+                  {[
+                    { value: 'friday', label: 'Friday', time: '2pm UTC' },
+                    { value: 'monday', label: 'Monday', time: '8am UTC' },
+                  ].map(({ value, label, time }) => (
+                    <label
+                      key={value}
+                      htmlFor={`day-${value}`}
+                      className={`flex items-start gap-2.5 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors ${
+                        digestDay === value
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border hover:bg-muted/50'
+                      }`}
+                    >
+                      <RadioGroupItem id={`day-${value}`} value={value} className="mt-0.5" />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">{label}</span>
+                        <span className="text-xs text-muted-foreground">{time}</span>
+                      </div>
+                    </label>
+                  ))}
+                </RadioGroup>
                 <FieldDescription>
                   Choose when you&apos;d like to receive your digest.
                 </FieldDescription>

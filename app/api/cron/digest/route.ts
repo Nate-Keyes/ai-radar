@@ -38,11 +38,11 @@ export async function GET(req: NextRequest) {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
   const { data: items, error: itemsError } = await supabaseAdmin
     .from('items')
-    .select('id, title, url, summary, category, source, published_at')
+    .select('id, title, url, summary, category, topic, source, published_at')
     .eq('approved', true)
     .gte('published_at', since)
     .order('published_at', { ascending: false })
-    .limit(30)
+    .limit(50)
 
   if (itemsError) {
     console.error('[digest] Failed to fetch items:', itemsError.message)
