@@ -5,7 +5,6 @@ import { FeedItem, type FeedItemData } from './FeedItem'
 import { FeedFilters, type TopicOption } from './FeedFilters'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 
 function FeedSkeleton() {
   return (
@@ -81,7 +80,6 @@ export function Feed() {
         search={search}
         onSearchChange={setSearch}
       />
-      <Separator />
 
       {loading ? (
         <FeedSkeleton />
