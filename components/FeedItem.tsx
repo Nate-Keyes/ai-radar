@@ -34,31 +34,66 @@ export function timeAgo(dateStr: string): string {
   return `${days}d ago`
 }
 
-interface FeedItemProps {
-  item: FeedItemData
-  onClick: (item: FeedItemData) => void
+function getFaviconUrl(url: string): string {
+  try {
+    const { hostname } = new URL(url)
+    return `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`
+  } catch {
+    return ''
+  }
 }
 
-export function FeedItem({ item, onClick }: FeedItemProps) {
+interface FeedItemProps {
+  item: FeedItemData
+}
+
+export function FeedItem({ item }: FeedItemProps) {
+  const faviconUrl = getFaviconUrl(item.url)
+
   return (
-    <button
-      onClick={() => onClick(item)}
-      className="group w-full text-left flex items-center gap-3 rounded-lg px-4 py-2 -mx-4 transition-colors hover:bg-muted/50"
+    <a
+      href={item.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex items-start gap-3 rounded-lg px-4 py-3 -mx-4 transition-colors hover:bg-muted/50"
     >
-      {item.topic && (
-        <span className="shrink-0 inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-          {TOPIC_LABELS[item.topic]}
-        </span>
-      )}
-      <p className="flex-1 min-w-0 text-sm font-medium leading-snug text-foreground group-hover:text-foreground/80 truncate">
-        {item.title}
-      </p>
-      <span className="shrink-0 text-xs text-muted-foreground/70 hidden sm:inline whitespace-nowrap">
-        {item.source} · {timeAgo(item.published_at)}
-      </span>
-      <span className="shrink-0 text-xs text-muted-foreground/70 sm:hidden whitespace-nowrap">
-        {timeAgo(item.published_at)}
-      </span>
-    </button>
+      {/* Favicon */}
+      <div className="shrink-0 mt-0.5 w-5 h-5 rounded-sm overflow-hidden bg-muted flex items-center justify-center">
+        {faviconUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={faviconUrl}
+            alt=""
+            width={20}
+            height={20}
+            className="w-full h-full object-contain"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+          />
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+          <span className="text-xs font-medium text-muted-foreground">{item.source}</span>
+          <span className="text-xs text-muted-foreground/40">·</span>
+          <span className="text-xs text-muted-foreground/60">{timeAgo(item.published_at)}</span>
+          {item.topic && (
+            <>
+              <span className="text-xs text-muted-foreground/40">·</span>
+              <span className="text-xs text-primary/70 font-medium">{TOPIC_LABELS[item.topic]}</span>
+            </>
+          )}
+        </div>
+        <p className="text-sm font-medium leading-snug text-foreground group-hover:text-foreground/80 line-clamp-1">
+          {item.title}
+        </p>
+        {item.summary && (
+          <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+            {item.summary}
+          </p>
+        )}
+      </div>
+    </a>
   )
 }

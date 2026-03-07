@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { FeedItem, type FeedItemData } from './FeedItem'
 import { FeedFilters, type TopicOption } from './FeedFilters'
-import { ArticleSheet } from './ArticleSheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -32,8 +31,6 @@ export function Feed() {
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [selectedItem, setSelectedItem] = useState<FeedItemData | null>(null)
-
   // Debounce search input 300ms
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300)
@@ -98,7 +95,7 @@ export function Feed() {
         <>
           <div>
             {items.map((item) => (
-              <FeedItem key={item.id} item={item} onClick={setSelectedItem} />
+              <FeedItem key={item.id} item={item} />
             ))}
           </div>
 
@@ -117,11 +114,6 @@ export function Feed() {
         </>
       )}
 
-      <ArticleSheet
-        item={selectedItem}
-        open={selectedItem !== null}
-        onOpenChange={(open) => { if (!open) setSelectedItem(null) }}
-      />
     </div>
   )
 }
