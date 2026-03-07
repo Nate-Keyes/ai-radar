@@ -4,15 +4,18 @@ import { useState } from 'react'
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogTrigger,
-  DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldDescription,
+} from '@/components/ui/field'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 type DigestDay = 'friday' | 'monday'
@@ -53,7 +56,6 @@ export function SignupModal() {
   const handleOpenChange = (val: boolean) => {
     setOpen(val)
     if (!val) {
-      // Reset form on close
       setTimeout(() => {
         setEmail('')
         setDigestDay('friday')
@@ -67,33 +69,35 @@ export function SignupModal() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger render={<Button size="sm" />}>Subscribe</DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="sm:max-w-sm">
         {status === 'success' ? (
-          <div className="py-4 text-center space-y-2">
-            <p className="text-2xl">🎉</p>
-            <DialogTitle>You&apos;re subscribed!</DialogTitle>
-            <DialogDescription>
-              You&apos;ll get a weekly AI digest every{' '}
-              {digestDay === 'friday' ? 'Friday at 2pm UTC' : 'Monday at 8am UTC'}.
-            </DialogDescription>
-            <div className="pt-2">
-              <Button size="sm" variant="outline" onClick={() => handleOpenChange(false)}>
-                Done
-              </Button>
+          <div className="flex flex-col gap-6 text-center py-2">
+            <DialogTitle className="sr-only">Subscribed</DialogTitle>
+            <div className="flex flex-col gap-2">
+              <h2 className="text-xl font-semibold tracking-tight">You&apos;re subscribed!</h2>
+              <p className="text-sm text-muted-foreground">
+                Your weekly AI digest will arrive every{' '}
+                {digestDay === 'friday' ? 'Friday at 2pm UTC' : 'Monday at 8am UTC'}.
+              </p>
             </div>
+            <Button variant="outline" onClick={() => handleOpenChange(false)}>
+              Done
+            </Button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <DialogHeader>
-              <DialogTitle>Subscribe to AI Radar</DialogTitle>
-              <DialogDescription>
-                Get a weekly digest of AI launches, news, and research delivered to your inbox.
-              </DialogDescription>
-            </DialogHeader>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1.5">
+              <DialogTitle className="text-xl font-semibold tracking-tight">
+                Subscribe to AI Radar
+              </DialogTitle>
+              <p className="text-sm text-muted-foreground">
+                Get a weekly digest of AI launches, news, and research.
+              </p>
+            </div>
 
-            <div className="py-4 space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="email">Email address</Label>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="email">Email address</FieldLabel>
                 <Input
                   id="email"
                   type="email"
@@ -103,43 +107,46 @@ export function SignupModal() {
                   required
                   autoFocus
                 />
-              </div>
+              </Field>
 
-              <div className="space-y-1.5">
-                <Label>Delivery day</Label>
+              <Field>
+                <FieldLabel>Delivery day</FieldLabel>
                 <ToggleGroup
                   value={[digestDay]}
                   onValueChange={(v) => v.length > 0 && setDigestDay(v[v.length - 1] as DigestDay)}
-                  className="grid grid-cols-2 gap-2"
+                  className="grid grid-cols-2 gap-2 w-full"
                   spacing={1}
                 >
                   <ToggleGroupItem
                     value="friday"
                     className="h-auto flex-col items-start px-3 py-2.5 text-left"
                   >
-                    <p className="font-medium text-sm">Friday</p>
-                    <p className="text-xs mt-0.5 opacity-70">2pm UTC — start the weekend informed</p>
+                    <span className="text-sm font-medium">Friday</span>
+                    <span className="text-xs text-muted-foreground mt-0.5">2pm UTC</span>
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="monday"
                     className="h-auto flex-col items-start px-3 py-2.5 text-left"
                   >
-                    <p className="font-medium text-sm">Monday</p>
-                    <p className="text-xs mt-0.5 opacity-70">8am UTC — kick off the week</p>
+                    <span className="text-sm font-medium">Monday</span>
+                    <span className="text-xs text-muted-foreground mt-0.5">8am UTC</span>
                   </ToggleGroupItem>
                 </ToggleGroup>
-              </div>
+                <FieldDescription>
+                  Choose when you&apos;d like to receive your digest.
+                </FieldDescription>
+              </Field>
 
               {status === 'error' && (
-                <p className="text-xs text-destructive">{errorMsg}</p>
+                <FieldError>{errorMsg}</FieldError>
               )}
-            </div>
 
-            <DialogFooter showCloseButton>
-              <Button type="submit" size="sm" disabled={status === 'loading'}>
-                {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
-              </Button>
-            </DialogFooter>
+              <Field>
+                <Button type="submit" disabled={status === 'loading'} className="w-full">
+                  {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
+                </Button>
+              </Field>
+            </FieldGroup>
           </form>
         )}
       </DialogContent>
